@@ -12,13 +12,26 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import TaskForm from './components/TaskForm.vue'
 import TaskList from './components/TaskList.vue'
 import TaskFilter from './components/TaskFilter.vue'
 
 const tasks = ref([])
 const filter = ref('all')
+
+// Load dari localStorage saat aplikasi dimulai
+onMounted(() => {
+    const storedTasks = localStorage.getItem('tasks')
+    if (storedTasks) {
+        tasks.value = JSON.parse(storedTasks)
+    }
+})
+
+// Simpan setiap kali `tasks` berubah
+watch(tasks, (newTasks) => {
+    localStorage.setItem('tasks', JSON.stringify(newTasks))
+}, { deep: true })
 
 function addTask(task) {
     tasks.value.push({ id: Date.now(), ...task, completed: false })
@@ -43,6 +56,7 @@ const filteredTasks = computed(() => {
     return tasks.value
 })
 </script>
+
 
 <style>
     .container {
