@@ -1,47 +1,54 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+<div class="container">
+    <h1>📋 To-Do List Vue</h1>
+    <TaskForm @add-task="addTask" />
+    <TaskFilter :currentFilter="filter" @change-filter="setFilter" />
+    <TaskList
+    :tasks="filteredTasks"
+    @toggle-complete="toggleTask"
+    @delete-task="deleteTask"
+    />
+</div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<script setup>
+import { ref, computed } from 'vue'
+import TaskForm from './components/TaskForm.vue'
+import TaskList from './components/TaskList.vue'
+import TaskFilter from './components/TaskFilter.vue'
+
+const tasks = ref([])
+const filter = ref('all')
+
+function addTask(task) {
+    tasks.value.push({ id: Date.now(), ...task, completed: false })
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+function toggleTask(id) {
+    const task = tasks.value.find(t => t.id === id)
+    if (task) task.completed = !task.completed
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+function deleteTask(id) {
+    tasks.value = tasks.value.filter(t => t.id !== id)
 }
+
+function setFilter(value) {
+    filter.value = value
+}
+
+const filteredTasks = computed(() => {
+    if (filter.value === 'completed') return tasks.value.filter(t => t.completed)
+    if (filter.value === 'active') return tasks.value.filter(t => !t.completed)
+    return tasks.value
+})
+</script>
+
+<style>
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 1rem;
+        font-family: Arial, sans-serif;
+    }
 </style>
