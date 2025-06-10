@@ -2,6 +2,14 @@
     <div class="container">
         <h1>📋 To-Do List Vue</h1>
         <TaskForm @add-task="addTask" />
+
+        <!-- 🔍 Search Bar -->
+        <input
+        v-model="search"
+        placeholder="Cari tugas..."
+        class="border p-2 w-full mb-4"
+        />
+
         <TaskFilter :currentFilter="filter" @change-filter="setFilter" />
         <TaskList
         :tasks="filteredTasks"
@@ -16,9 +24,12 @@ import { ref, computed, watch, onMounted } from 'vue'
 import TaskForm from '../components/TaskForm.vue'
 import TaskList from '../components/TaskList.vue'
 import TaskFilter from '../components/TaskFilter.vue'
+import { useTaskStore } from '../stores/taskStore'
 
-const tasks = ref([])
+const store = useTaskStore()
 const filter = ref('all')
+const search = ref('')
+const tasks = ref([])
 
 // Load dari localStorage saat aplikasi dimulai
 onMounted(() => {
@@ -49,6 +60,13 @@ function deleteTask(id) {
 function setFilter(value) {
     filter.value = value
 }
+
+// Gabungan filter + pencarian
+const filteredAndSearchedTasks = computed(() => {
+  return store.filteredTasks(filter.value).filter(task =>
+    task.title.toLowerCase().includes(search.value.toLowerCase())
+  )
+})
 
 const filteredTasks = computed(() => {
     if (filter.value === 'completed') return tasks.value.filter(t => t.completed)
