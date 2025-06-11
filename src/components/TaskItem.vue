@@ -1,6 +1,6 @@
 <template>
     <li>
-        <input type="checkbox" v-model="task.completed" @change="$emit('toggle-complete')" />
+        <input type="checkbox" v-model="task.completed" @change="$emit('toggle-task')" />
         <span :style="{ textDecoration: task.completed ? 'line-through' : 'none' }">
         {{ task.title }} ({{ task.category }})
         </span>
@@ -10,5 +10,5 @@
 
 <script setup>
     defineProps({ task: Object })
-    defineEmits(['toggle-complete', 'delete-task'])
+    defineEmits(['toggle-task', 'delete-task'])
 </script>
