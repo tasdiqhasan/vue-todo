@@ -40,5 +40,30 @@ export const useTaskStore = defineStore('task', () => {
         }
     }
 
-    return { tasks, categories, addTask, deleteTask, toggleTask, getTaskById, filteredTasks, addCategory }
+    const totalTasks = computed(() => tasks.value.length)
+    const completedTasks = computed(() => tasks.value.filter(t => t.completed).length)
+    const activeTasks = computed(() => tasks.value.filter(t => !t.completed).length)
+
+    const tasksPerCategory = computed(() => {
+    const map = {}
+    categories.value.forEach(cat => {
+        map[cat] = tasks.value.filter(t => t.category === cat).length
+    })
+    return map
+    })
+
+    return { 
+        tasks, 
+        categories, 
+        addTask, 
+        deleteTask, 
+        toggleTask, 
+        getTaskById, 
+        filteredTasks, 
+        addCategory,
+        totalTasks,
+        completedTasks,
+        activeTasks,
+        tasksPerCategory,
+    }
 })

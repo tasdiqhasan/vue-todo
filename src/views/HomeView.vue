@@ -1,6 +1,24 @@
 <template>
-    <div class="container">
+    <div class="p-4 max-w-2xl mx-auto">
         <h1 class="text-3xl font-bold mb-4">📋 To-Do List</h1>
+
+        <!-- Statistik -->
+        <div class="bg-white p-4 shadow rounded mb-4">
+        <h2 class="text-xl font-semibold mb-2">📊 Statistik</h2>
+        <p>🧾 Total Tugas: <strong>{{ store.totalTasks }}</strong></p>
+        <p>✅ Selesai: <strong>{{ store.completedTasks }}</strong></p>
+        <p>📌 Belum Selesai: <strong>{{ store.activeTasks }}</strong></p>
+
+        <div class="mt-2">
+            <h3 class="font-semibold">📂 Tugas per Kategori:</h3>
+            <ul class="list-disc ml-5">
+            <li v-for="(count, cat) in store.tasksPerCategory" :key="cat">
+                {{ cat }}: {{ count }}
+            </li>
+            </ul>
+        </div>
+        </div>
+
         <TaskForm @add-task="addTask" />
 
         <!-- 🔍 Search Bar -->
