@@ -3,10 +3,15 @@ import { ref, computed, watch } from 'vue'
 
 export const useTaskStore = defineStore('task', () => {
     const tasks = ref(JSON.parse(localStorage.getItem('tasks')) || [])
+    const categories = ref(JSON.parse(localStorage.getItem('categories')) || ['Pekerjaan', 'Pribadi', 'Belajar'])
 
     watch(tasks, (newTasks) => {
         localStorage.setItem('tasks', JSON.stringify(newTasks))
     }, { deep: true })
+
+    watch(categories, (newCategories) => {
+        localStorage.setItem('categories', JSON.stringify(newCategories))
+    }, { deep: true})
 
     const addTask = (task) => {
         tasks.value.push({ id: Date.now().toString(), ...task, completed: false })
@@ -29,5 +34,11 @@ export const useTaskStore = defineStore('task', () => {
         return tasks.value
     }
 
-    return { tasks, addTask, deleteTask, toggleTask, getTaskById, filteredTasks }
+    const addCategory = (name) => {
+        if (!categories.value.includes(name)) {
+            categories.value.push(name)
+        }
+    }
+
+    return { tasks, categories, addTask, deleteTask, toggleTask, getTaskById, filteredTasks, addCategory }
 })
